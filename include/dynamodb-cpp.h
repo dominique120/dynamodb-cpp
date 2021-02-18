@@ -35,6 +35,44 @@ namespace alddb {
 
 		struct PrimaryKey {
 		public:
+
+			PrimaryKey(const nlohmann::json& keys) {
+				add_key_json(keys);
+			}
+
+			PrimaryKey(const std::string& k1_name, const std::string& k1_value) {
+				add_key_string(k1_name.c_str(), k1_value.c_str());
+			}
+
+			PrimaryKey(const std::string& k1_name, const std::string& k1_value, const std::string& k2_name, const std::string& k2_value) {
+				add_key_string(k1_name.c_str(), k1_value.c_str());
+				add_key_string(k2_name.c_str(), k2_value.c_str());
+			}
+
+			void add_key_string(Aws::String keyname, Aws::String keyvalue) {
+				Aws::DynamoDB::Model::AttributeValue value;
+				value.SetS(keyvalue);
+				pk.push_back(std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>(keyname, value));
+			}
+
+			void add_key_json(const nlohmann::json& keys) {
+				for (const auto& key : keys.items()) {
+					Aws::DynamoDB::Model::AttributeValue value;
+					value.SetS(key.value());
+					pk.push_back(std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>(key.key().c_str(), value));
+				}
+			}
+
+			template<typename Number>
+			void add_key_numer(Aws::String keyname, Number keyvalue) {
+				Aws::DynamoDB::Model::AttributeValue value;
+				value.SetN(Number);
+				pk.push_back(std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>(keyname, value));
+			}
+
+		private:			
+			std::vector<std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>> pk;
+
 			void set_keys(Aws::DynamoDB::Model::GetItemRequest& req) {
 				for (const auto& key : pk) {
 					req.AddKey(key.first, key.second);
@@ -53,21 +91,7 @@ namespace alddb {
 				}
 			}
 
-			void add_key_string(Aws::String keyname, Aws::String keyvalue) {
-				Aws::DynamoDB::Model::AttributeValue value;
-				value.SetS(keyvalue);
-				pk.push_back(std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>(keyname, value));
-			}
-
-			template<typename Number>
-			void add_key_numer(Aws::String keyname, Number keyvalue) {
-				Aws::DynamoDB::Model::AttributeValue value;
-				value.SetN(Number);
-				pk.push_back(std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>(keyname, value));
-			}
-
-		private:
-			std::vector<std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>> pk;
+			friend DynamoDB;
 		};
 
 
@@ -83,6 +107,7 @@ namespace alddb {
 		static inline void query_with_expression(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, const Aws::String& key_name, const Aws::String& expression, const nlohmann::json& expression_values, nlohmann::json& result_out);
 
 		// Scan
+		// Rarely, if ever, used.
 		static inline void scan_table_items_dynamo(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, nlohmann::json& result_out);
 
 
@@ -99,6 +124,8 @@ namespace alddb {
 		static inline void compose_object(Aws::DynamoDB::Model::AttributeValue& attr, const nlohmann::json& json);
 		static inline Aws::Map<Aws::String, Aws::DynamoDB::Model::AttributeValue> build_operation_values(const nlohmann::json& json);
 		static inline Aws::String build_operation_expression(const nlohmann::json& json, const std::string& operation);
+	
+		friend PrimaryKey;
 	};
 }
 
