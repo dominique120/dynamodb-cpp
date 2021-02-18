@@ -1,2 +1,2 @@
 # dynamodb-cpp 
-Library for wrapping up Dynamo operations in a friendly and easy to use way. Aimed primarily at single table(Adjency List) designed.
+This library is designed aas a thin wrapper for DynamoDB operations. Aimed primarily at single table(Adjacency List) designed.
