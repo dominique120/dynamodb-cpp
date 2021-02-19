@@ -66,11 +66,11 @@ namespace alddb {
 			template<typename Number>
 			void add_key_numer(Aws::String keyname, Number keyvalue) {
 				Aws::DynamoDB::Model::AttributeValue value;
-				value.SetN(Number);
+				value.SetN(keyvalue);
 				pk.push_back(std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>(keyname, value));
 			}
 
-		private:			
+		private:
 			std::vector<std::pair<Aws::String, Aws::DynamoDB::Model::AttributeValue>> pk;
 
 			void set_keys(Aws::DynamoDB::Model::GetItemRequest& req) {
@@ -124,7 +124,7 @@ namespace alddb {
 		static inline void compose_object(Aws::DynamoDB::Model::AttributeValue& attr, const nlohmann::json& json);
 		static inline Aws::Map<Aws::String, Aws::DynamoDB::Model::AttributeValue> build_operation_values(const nlohmann::json& json);
 		static inline Aws::String build_operation_expression(const nlohmann::json& json, const std::string& operation);
-	
+
 		friend PrimaryKey;
 	};
 }
@@ -293,7 +293,7 @@ bool alddb::DynamoDB::update_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient>
 	// Define TableName argument
 	Aws::DynamoDB::Model::UpdateItemRequest uir;
 	uir.SetTableName(table.c_str());
-		
+
 	primary_key.set_keys(uir);
 
 	// set expression for SET
