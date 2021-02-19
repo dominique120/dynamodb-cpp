@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(alddb CXX)
+project(dynamodb-cpp VERSION 0.0.1)
 
 include(GNUInstallDirs)
 
@@ -40,5 +40,5 @@ install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
               "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include DESTINATION include)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}.h DESTINATION include)
 
