@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\dynamodb-cpp.h">
+    <ClInclude Include="..\include\dynamodb-cpp\dynamodb-cpp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

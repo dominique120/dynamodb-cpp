@@ -142,7 +142,7 @@
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\dynamodb-cpp.h" />
+    <ClInclude Include="..\include\dynamodb-cpp\dynamodb-cpp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,4 @@
-#include "include/dynamodb-cpp.h"
+#include "include/dynamodb-cpp/dynamodb-cpp.h"
 
 
 int main() {
