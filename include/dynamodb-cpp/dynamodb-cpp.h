@@ -96,19 +96,39 @@ namespace alddb {
 
 
 		// Basic Operations
-		static inline void get_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, PrimaryKey& primary_key, nlohmann::json& result_out);
-		static inline bool update_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const nlohmann::json& request, const std::string& table, PrimaryKey& primary_key);
-		static inline bool delete_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, PrimaryKey& primary_key);
+		static inline void get_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+			const Aws::String& table_name,
+			PrimaryKey& primary_key,
+			nlohmann::json& result_out);
+				
+		static inline bool update_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+			const nlohmann::json& request,
+			const std::string& table,
+			PrimaryKey& primary_key);
 
-		// Put item
-		static inline bool put_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const nlohmann::json& request, const std::string& table);
+		static inline bool delete_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+			const Aws::String& table_name,
+			PrimaryKey& primary_key);
+
+		// Put(update) item
+		static inline bool put_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+			const nlohmann::json& request,
+			const std::string& table);
 
 		// Queries
-		static inline void query_with_expression(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, const Aws::String& key_name, const Aws::String& expression, const nlohmann::json& expression_values, nlohmann::json& result_out);
+		static inline void query_with_expression(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+			const Aws::String& table_name,
+			const Aws::String& key_name,
+			const Aws::String& expression,
+			const nlohmann::json& expression_values,
+			const Aws::String& projection,
+			nlohmann::json& result_out);
 
 		// Scan
 		// Rarely, if ever, used.
-		static inline void scan_table_items_dynamo(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, nlohmann::json& result_out);
+		static inline void scan_table_items_dynamo(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+			const Aws::String& table_name, 
+			nlohmann::json& result_out);
 
 
 		// Make default client
@@ -352,11 +372,22 @@ bool alddb::DynamoDB::put_item(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> cl
 
 
 // Query
-void alddb::DynamoDB::query_with_expression(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, const Aws::String& table_name, const Aws::String& key_name, const Aws::String& expression, const nlohmann::json& expression_values, nlohmann::json& result_out) {
+void alddb::DynamoDB::query_with_expression(std::unique_ptr<Aws::DynamoDB::DynamoDBClient> client, 
+	const Aws::String& table_name,
+	const Aws::String& key_name,
+	const Aws::String& expression,
+	const nlohmann::json& expression_values,
+	const Aws::String& projection,
+	nlohmann::json& result_out) {
+
 	Aws::DynamoDB::Model::QueryRequest query_request;
 	query_request.SetTableName(table_name);
 	if (!key_name.empty()) {
 		query_request.SetIndexName(key_name);
+	}
+
+	if (!projection.empty()) {
+		query_request.SetProjectionExpression(projection);
 	}
 
 	query_request.SetKeyConditionExpression(expression);
